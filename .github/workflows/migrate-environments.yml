@@ -67,14 +67,17 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
           script: |
             const response = ${{ steps.get-envs.outputs.result }};
-            const targetOwner = 'liatrio-enterprise';
-            const targetRepo = 'calvin-test';
       
             for (const env of response.environments) {
+              //const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
+              //  owner: 'liatrio-enterprise',
+              //  repo: 'environment-migration-test',
+              //  environment_name: env.name,
+              //});
+
               const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
-                owner: 'liatrio-enterprise',
-                repo: 'environment-migration-test',
-                environment_name: env.name,
+                repository_id: 'environment-migration-test',
+                environment_name: env.name
               });
 
               console.log(JSON.stringify(secretResponse));
