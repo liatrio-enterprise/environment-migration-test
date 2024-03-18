@@ -23,11 +23,12 @@ jobs:
               console.log(env.name);
               console.log(env.protection_rules);
               console.log(env.deployment_branch_policy);
-
-              for(const timer of env.protection_rules){
-                console.log(timer);
-              }
             }
+
+            response.data.environments.protection_rules.forEach((rule, index) => {
+              console.log('Rule ${index + 1}:');
+              console.log(rule);
+            })
 
             return response.data;
       
