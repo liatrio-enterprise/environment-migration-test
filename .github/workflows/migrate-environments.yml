@@ -36,9 +36,9 @@ jobs:
 
             const response = ${{ steps.get-envs.outputs.result }};
 
-            //for (const env of response.data.environments) {
-            //  console.log(env.name);
-            //  console.log(env.protection_rules);
-            //  console.log(env.deployment_branch_policy);
-            //}
+            for (const env of response.environments) {
+              console.log(env.name);
+              console.log(env.protection_rules);
+              console.log(env.deployment_branch_policy);
+            }
           
