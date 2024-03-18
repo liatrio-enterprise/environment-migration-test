@@ -19,10 +19,17 @@ jobs:
             });
             console.log(response.data);
             console.log("Test environment")
-            console.log(response.data.environments[0].protection_rules);
-            console.log(response.data.environments[0].deployment_branch_policy);
 
-            console.log("Test1 environment")
-            console.log(response.data.environments[1].protection_rules);
-            console.log(response.data.environments[1].deployment_branch_policy);
+            for(const env of response.data.environments) {
+              console.log(env.name);
+              console.log(env.protection_rules);
+              console.log(env.deployment_branch_policy);
+            }
+
+            # console.log(response.data.environments[0].protection_rules);
+            # console.log(response.data.environments[0].deployment_branch_policy);
+
+            # console.log("Test1 environment")
+            # console.log(response.data.environments[1].protection_rules);
+            # console.log(response.data.environments[1].deployment_branch_policy);
             return response.data;
