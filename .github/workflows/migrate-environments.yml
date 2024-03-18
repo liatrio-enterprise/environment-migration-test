@@ -83,7 +83,7 @@ jobs:
               console.log(JSON.stringify(secretResponse));
               // console.log(secretResponse)
       
-              for (const secret of secretsResponse.data.secrets) {
+              //for (const secret of secretsResponse.data.secrets) {
                 // Get the value of the secret
                 //const secretValue = await github.rest.actions.getRepoSecret({
                 //  owner: 'liatrio-enterprise',
@@ -92,13 +92,13 @@ jobs:
                 //});
       
                 // Migrate the secret to the target repository
-                await github.rest.actions.createOrUpdateEnvironmentSecret({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  secret_name: secret.name,
+                //await github.rest.actions.createOrUpdateEnvironmentSecret({
+                //  owner: 'liatrio-enterprise',
+                //  repo: 'calvin-test',
+                //  environment_name: env.name,
+                //  secret_name: secret.name,
                   // encrypted_value: secretValue.data.encrypted_value,
                   // key_id: secretValue.data.key_id,
-                });
-              }
+                //});
+              //}
             }       
