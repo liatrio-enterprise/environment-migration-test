@@ -18,4 +18,6 @@ jobs:
               repo: 'environment-migration-test',
             });
             console.log(response.data);
+            console.log(response.data.environments[0].protection_rules);
+            console.log(response.data.environments[0].deployment_branch_policy);
             return response.data;
