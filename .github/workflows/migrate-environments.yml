@@ -17,7 +17,7 @@ jobs:
               owner: 'liatrio-enterprise',
               repo: 'environment-migration-test',
             });
-            console.log("response data: " + response.data);
+            console.log(response.data);
             console.log("Test environment");
             
             response.data.environments.forEach((environment, index) => {
