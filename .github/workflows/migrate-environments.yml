@@ -12,6 +12,7 @@ jobs:
         id: get-envs
         uses: actions/github-script@v7
         with:
+          result-encoding: json
           script: |
             const response = await github.rest.repos.getAllEnvironments({
               owner: 'liatrio-enterprise',
@@ -30,6 +31,7 @@ jobs:
       - name: Create PR
         uses: actions/github-script@v7
         with:
+          result-encoding: json
           github-token: ${{ secrets.GH_PAT }}
           script: |
             console.log(JSON.stringify(${{ steps.get-envs.outputs.result }}));
@@ -137,6 +139,7 @@ jobs:
       - name: Migrate environment secrets
         uses: actions/github-script@v7
         with:
+          result-encoding: json
           github-token: ${{ secrets.GH_PAT }}
           script: |
             const response = ${{ steps.get-envs.outputs.result }};
