@@ -86,7 +86,7 @@ jobs:
               for (const secret of secretsResponse.data.secrets) {
                 console.log(secret.name);
                 // Get the value of the secret
-                const secertValue = await github.rest.actions.getEnvironmentSecret({
+                const secretValue = await github.rest.actions.getEnvironmentSecret({
                   repository_id: repoID.data.id,
                   environment_name: env.name,
                   secret_name: secret.name,
