@@ -23,41 +23,13 @@ jobs:
               console.log(env.name);
               console.log(env.protection_rules);
               console.log(env.deployment_branch_policy);
-            }
 
-            response.data.environments.protection_rules.forEach((rule, index) => {
-              console.log('Rule ${index + 1}:');
-              console.log(rule);
-            })
-
-            return response.data;
-      
-      - name: Create PR
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GH_PAT }}
-          script: |
-            console.log(JSON.stringify(${{ steps.get-envs.outputs.result }}));
-
-            const response = ${{ steps.get-envs.outputs.result }};
-
-            for (const env of response.environments) {
-              if (env.deployment_branch_policy === null){
-                github.rest.repos.createOrUpdateEnvironment({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  deployment_branch_policy: null
-                })
-              } else {
-                github.rest.repos.createOrUpdateEnvironment({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  deployment_branch_policy: {
-                    protected_branches: env.deployment_branch_policy.protected_branches,
-                    custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
-                  }
-                })
+              if (env.protection_rules) {
+                env.protection_rules.forEach((rule, index) => {
+                  console.log(`Rule ${index + 1}:`);
+                  console.log(rule);
+                });
               }
             }
+
+            return response.data;
