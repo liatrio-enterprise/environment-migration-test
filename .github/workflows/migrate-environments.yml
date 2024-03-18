@@ -41,7 +41,7 @@ jobs:
               // console.log(env.protection_rules);
               // console.log(env.deployment_branch_policy);
 
-              if (env.deployment_branch_policy === null){
+              if (env.deployment_branch_policy === null){ // No deployment branch policy
                 github.rest.repos.createOrUpdateEnvironment({
                   owner: 'liatrio-enterprise',
                   repo: 'calvin-test',
@@ -49,15 +49,88 @@ jobs:
                   deployment_branch_policy: null
                 })
               } else {
-                github.rest.repos.createOrUpdateEnvironment({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  deployment_branch_policy: {
-                    protected_branches: env.deployment_branch_policy.protected_branches,
-                    custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                let rule_wait_timer = false
+                let rule_prevent_self_review = false
+                let rule_reviewers = []
+                for (const rule of response.protection_rules){
+                  if (env.protection_rules.wait_timer != null){
+                    rule_wait_timer = true
+                  } else if (env.protection_rules.prevent_self_review != null){
+                    rule_prevent_self_review = true
+                  } else if (env.protection_rules.reviewers != null){
+                    rule_reviewers = env.protection_rules.reviewers
                   }
-                })
+                }
+                if (rule_wait_timer === true && rule_prevent_self_review === true && rule_reviewers.length > 0){ // required reviewers and prevent self review, wait timer (all rules)
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                    wait_timer: env.protection_rules.wait_timer,
+                    prevent_self_review: env.protection_rules.prevent_self_review,
+                    reviewers: env.protection_rules.reviewers,
+                  })
+                } else if (rule_wait_timer === true && rule_prevent_self_review === false && rule_reviewers.length > 0){ // required reviewers, no prevent self review, wait timer
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                    wait_timer: env.protection_rules.wait_timer,
+                    reviewers: env.protection_rules.reviewers,
+                  })
+                } else if (rule_wait_timer === false && rule_prevent_self_review === true && rule_reviewers.length > 0){ // required reviewers and prevent self review, no wait timer
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                    prevent_self_review: env.protection_rules.prevent_self_review,
+                    reviewers: env.protection_rules.reviewers,
+                  })
+                } else if (rule_wait_timer === false && rule_prevent_self_review === false && rule_reviewers.length > 0){ // required reviewers, no prevent self review, no wait timer
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                    reviewers: env.protection_rules.reviewers,
+                  })
+                } else if (rule_wait_timer === true && rule_prevent_self_review === false && rule_reviewers.length === 0){ // wait timer only
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                    wait_timer: env.protection_rules.wait_timer,
+                  })
+                } else { // no rules
+                  github.rest.repos.createOrUpdateEnvironment({
+                    owner: 'liatrio-enterprise',
+                    repo: 'calvin-test',
+                    environment_name: env.name,
+                    deployment_branch_policy: {
+                      protected_branches: env.deployment_branch_policy.protected_branches,
+                      custom_branch_policies: env.deployment_branch_policy.custom_branch_policies,
+                    }
+                  })
+                }
               }
             }
 
@@ -95,13 +168,13 @@ jobs:
                 console.log(secretValue.data);
       
                 // Migrate the secret to the target repository
-                await github.rest.actions.createOrUpdateEnvironmentSecret({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  secret_name: secret.name,
-                  encrypted_value: secretValue.data.encrypted_value,
-                  key_id: secretValue.data.key_id,
-                });
+                //await github.rest.actions.createOrUpdateEnvironmentSecret({
+                //  owner: 'liatrio-enterprise',
+                //  repo: 'calvin-test',
+                //  environment_name: env.name,
+                //  secret_name: secret.name,
+                //  encrypted_value: secretValue.data.encrypted_value,
+                //  key_id: secretValue.data.key_id,
+                //});
               }
             }       
