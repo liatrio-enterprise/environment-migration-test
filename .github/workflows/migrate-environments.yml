@@ -81,12 +81,12 @@ jobs:
               });
               console.log(repoID.data.id);
 
-              //const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
-              //  repository_id: 'environment-migration-test',
-              //  environment_name: env.name
-              //});
+              const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
+                repository_id: repoID.data.id,
+                environment_name: env.name
+              });
 
-              //console.log(JSON.stringify(secretResponse));
+              console.log(JSON.stringify(secretResponse));
               // console.log(secretResponse)
       
               //for (const secret of secretsResponse.data.secrets) {
