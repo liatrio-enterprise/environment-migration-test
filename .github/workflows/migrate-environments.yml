@@ -88,14 +88,16 @@ jobs:
 
               console.log(JSON.stringify(secretsResponse));
               // console.log(secretResponse)
+
+              console.log(secretsResponse.data.secrets);
       
-              for (const secret of secretsResponse.data.secrets) {
+              //for (const secret of secretsResponse.data.secrets) {
                 // Get the value of the secret
-                const secretValue = await github.rest.actions.getRepoSecret({
-                  owner: 'liatrio-enterprise',
-                  repo: 'environment-migration-test',
-                  secret_name: secret.name,
-                });
+                //const secretValue = await github.rest.actions.getRepoSecret({
+                //  owner: 'liatrio-enterprise',
+                //  repo: 'environment-migration-test',
+                //  secret_name: secret.name,
+                //});
 
                 console.log(secretValue.data);
       
@@ -108,5 +110,5 @@ jobs:
                   // encrypted_value: secretValue.data.encrypted_value,
                   // key_id: secretValue.data.key_id,
                 //});
-              }
+              //}
             }       
