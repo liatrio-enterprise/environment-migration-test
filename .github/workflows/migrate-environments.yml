@@ -69,12 +69,6 @@ jobs:
             const response = ${{ steps.get-envs.outputs.result }};
       
             for (const env of response.environments) {
-              //const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
-              //  owner: 'liatrio-enterprise',
-              //  repo: 'environment-migration-test',
-              //  environment_name: env.name,
-              //});
-
               const repoID = await github.rest.repos.get({
                 owner: 'liatrio-enterprise',
                 repo: 'environment-migration-test',
@@ -87,20 +81,18 @@ jobs:
               });
 
               console.log(JSON.stringify(secretsResponse));
-              // console.log(secretResponse)
-
               console.log(secretsResponse.data.secrets);
       
               for (const secret of secretsResponse.data.secrets) {
                 console.log(secret.name);
                 // Get the value of the secret
-                //const secretValue = await github.rest.actions.getRepoSecret({
-                //  owner: 'liatrio-enterprise',
-                //  repo: 'environment-migration-test',
-                //  secret_name: secret.name,
-                //});
+                const secertValue = await github.rest.actions.getEnvironmentSecret({
+                  repository_id: repoID.data.id,
+                  environment_name: env.name,
+                  secret_name: secret.name,
+                });
 
-                //console.log(secretValue.data);
+                console.log(secretValue.data);
       
                 // Migrate the secret to the target repository
                 //await github.rest.actions.createOrUpdateEnvironmentSecret({
