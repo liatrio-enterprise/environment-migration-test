@@ -75,12 +75,18 @@ jobs:
               //  environment_name: env.name,
               //});
 
-              const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
-                repository_id: 'environment-migration-test',
-                environment_name: env.name
+              const repoID = await github.rest.repos.get({
+                owner: 'liatrio-enterprise',
+                repo: 'environment-migration-test',
               });
+              console.log(repoID.data.id);
 
-              console.log(JSON.stringify(secretResponse));
+              //const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
+              //  repository_id: 'environment-migration-test',
+              //  environment_name: env.name
+              //});
+
+              //console.log(JSON.stringify(secretResponse));
               // console.log(secretResponse)
       
               //for (const secret of secretsResponse.data.secrets) {
