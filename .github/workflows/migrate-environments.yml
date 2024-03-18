@@ -34,9 +34,15 @@ jobs:
               }
 
               env.wait_timer = wait_timer;
+              console.log(env.wait_timer);
             }
 
-            return response.data;
+            return response.data.map(env => {
+              return {
+                ...env,
+                wait_timer: env.wait_timer
+              };
+            });
 
       - name: Create deployment environments in target repo
         uses: actions/github-script@v7
