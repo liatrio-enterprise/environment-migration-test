@@ -41,7 +41,7 @@ jobs:
               // console.log(env.protection_rules);
               // console.log(env.deployment_branch_policy);
 
-              octokit.rest.repos.createOrUpdateEnvironment({
+              github.rest.repos.createOrUpdateEnvironment({
                 owner: 'liatrio-enterprise',
                 repo: 'calvin-test',
                 environment_name: env.name,
