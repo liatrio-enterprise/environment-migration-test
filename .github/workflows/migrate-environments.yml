@@ -59,6 +59,7 @@ jobs:
               }
               env.wait_timer = wait_timer;
 
+              console.log(env.deployment_branch_policy);
               console.log(env.deployment_branch_policy.protected_branches);
               console.log(env.deployment_branch_policy.custom_branch_policies);
 
