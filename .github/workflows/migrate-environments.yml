@@ -1,0 +1,20 @@
+name: Migrate environments
+
+on:
+  workflow_dispatch:
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get deployment environments from source repo
+        id: get-envs
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const response = await github.rest.repos.getAllEnvironments({
+              owner: 'liatrio-enterprise',
+              repo: 'environment-migration-test',
+            });
+            console.log(response.data);
+            return response.data;
