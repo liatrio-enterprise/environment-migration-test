@@ -18,8 +18,11 @@ jobs:
               repo: 'environment-migration-test',
             });
             console.log(response.data);
+            console.log("Test environment")
             console.log(response.data.environments[0].protection_rules);
             console.log(response.data.environments[0].deployment_branch_policy);
-            return response.data;
 
-      - run: echo Hello there
+            console.log("Test1 environment")
+            console.log(response.data.environments[1].protection_rules);
+            console.log(response.data.environments[1].deployment_branch_policy);
+            return response.data;
