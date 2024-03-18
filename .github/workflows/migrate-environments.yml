@@ -17,12 +17,24 @@ jobs:
               owner: 'liatrio-enterprise',
               repo: 'environment-migration-test',
             });
-            console.log(response.data);
-            console.log("Test environment")
-            console.log(response.data.environments[0].protection_rules);
-            console.log(response.data.environments[0].deployment_branch_policy);
+            console.log("response data: " + response.data);
+            console.log("Test environment");
+            
+            response.data.environments.forEach((environment, index) => {
+              console.log(`Environment ${index + 1}:`);
+              console.log(environment);
+            
+              console.log(`Protection rules for environment ${index + 1}:`);
+              environment.protection_rules.forEach((rule, ruleIndex) => {
+                console.log(`Rule ${ruleIndex + 1}:`);
+                console.log(rule);
+              });
+            
+              console.log(`Deployment branch policy for environment ${index + 1}:`);
+              console.log(environment.deployment_branch_policy);
+            });
 
-            console.log("Test1 environment")
-            console.log(response.data.environments[1].protection_rules);
-            console.log(response.data.environments[1].deployment_branch_policy);
-            return response.data;
+            # console.log("Test1 environment")
+            # console.log(response.data.environments[1].protection_rules);
+            # console.log(response.data.environments[1].deployment_branch_policy);
+            # return response.data;
