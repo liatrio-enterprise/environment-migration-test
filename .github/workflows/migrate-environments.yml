@@ -12,6 +12,7 @@ jobs:
         id: get-envs
         uses: actions/github-script@v7
         with:
+          result-encoding: json
           script: |
             const response = await github.rest.repos.getAllEnvironments({
               owner: 'liatrio-enterprise',
@@ -44,6 +45,8 @@ jobs:
         with:
           script: |
             const environments = ${{ steps.get-envs.outputs.result }};
+            console.log(environments);
+
             for (const env of environments) {
               let wait_timer;
               if (env.protection_rules) {
