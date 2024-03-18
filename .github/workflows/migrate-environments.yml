@@ -28,7 +28,7 @@ jobs:
 
             return response.data;
       
-      - name: Create
+      - name: Create PR
         uses: actions/github-script@v7
         with:
           script: |
@@ -37,8 +37,15 @@ jobs:
             const response = ${{ steps.get-envs.outputs.result }};
 
             for (const env of response.environments) {
-              console.log(env.name);
-              console.log(env.protection_rules);
-              console.log(env.deployment_branch_policy);
-            }
-          
+              // console.log(env.name);
+              // console.log(env.protection_rules);
+              // console.log(env.deployment_branch_policy);
+
+              octokit.rest.repos.createOrUpdateEnvironment({
+                owner: 'liatrio-enterprise',
+                repo: 'calvin-test',
+                environment_name: env.name,
+                deployment_branch_policy.protected_branches: env.deployment_branch_policy,
+                deployment_branch_policy.custom_branch_policies: env.deployment_branch_policy,
+              })
+            }         
