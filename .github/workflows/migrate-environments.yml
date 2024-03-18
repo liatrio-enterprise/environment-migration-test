@@ -37,12 +37,7 @@ jobs:
               console.log(env.wait_timer);
             }
 
-            return response.data.map(env => {
-              return {
-                ...env,
-                wait_timer: env.wait_timer
-              };
-            });
+            return response.data;
 
       - name: Create deployment environments in target repo
         uses: actions/github-script@v7
@@ -50,6 +45,16 @@ jobs:
           script: |
             const environments = ${{ steps.get-envs.outputs.result }};
             for (const env of environments) {
+              let wait_timer;
+              if (env.protection_rules) {
+                env.protection_rules.forEach((rule) => {
+                  if (rule.type === 'wait_timer') {
+                    wait_timer = rule.wait_timer;
+                  }
+                });
+              }
+              env.wait_timer = wait_timer;
+
               await github.rest.repos.createOrUpdateEnvironment({
                 owner: 'liatrio-enterprise',
                 repo: 'calvin-test',
