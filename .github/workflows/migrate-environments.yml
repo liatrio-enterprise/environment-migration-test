@@ -97,7 +97,7 @@ jobs:
                   secret_name: secret.name,
                 });
 
-                console.log(secretValue.data.encrypted_value);
+                console.log(secretValue.data);
       
                 // Migrate the secret to the target repository
                 //await github.rest.actions.createOrUpdateEnvironmentSecret({
