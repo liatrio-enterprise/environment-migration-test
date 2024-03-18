@@ -18,11 +18,15 @@ jobs:
               repo: 'environment-migration-test',
             });
             console.log(response.data);
-            console.log("Test environment")
 
             for (const env of response.data.environments) {
               console.log(env.name);
               console.log(env.protection_rules);
               console.log(env.deployment_branch_policy);
             }
+
             return response.data;
+      
+      - run:
+          echo "The environments are ${{ steps.get-envs.outputs.result }}"
+          
