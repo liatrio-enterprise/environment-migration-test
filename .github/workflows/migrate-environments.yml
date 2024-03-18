@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Get deployment environments from source repo
         id: get-envs
-        uses: actions/github-script@v4
+        uses: actions/github-script@v7
         with:
           script: |
             const response = await github.rest.repos.getAllEnvironments({
