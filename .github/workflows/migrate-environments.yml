@@ -22,8 +22,11 @@ jobs:
             for (const env of response.data.environments) {
               console.log(env.name);
               console.log(env.protection_rules);
-              console.log(env.protection_rules.wait_timer);
               console.log(env.deployment_branch_policy);
+
+              for(const timer of env.protection_rules){
+                console.log(timer);
+              }
             }
 
             return response.data;
