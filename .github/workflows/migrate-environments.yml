@@ -20,7 +20,7 @@ jobs:
             console.log(response.data);
             console.log("Test environment")
 
-            for (const env of responses) {
+            for (const env of response) {
               console.log(response.data.environments[env].protection_rules);
               console.log(response.data.environments[env].deployment_branch_policy);
             }
