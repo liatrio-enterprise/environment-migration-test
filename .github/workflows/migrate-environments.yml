@@ -22,7 +22,7 @@ jobs:
             for (const env of response.data.environments) {
               console.log(env.name);
               console.log(env.protection_rules);
-              console.log(env.protection_rules[env].reviewers);
+              console.log(env.protection_rules.reviewers);
               console.log(env.deployment_branch_policy);
             }
 
