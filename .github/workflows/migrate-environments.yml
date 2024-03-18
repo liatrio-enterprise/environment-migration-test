@@ -43,6 +43,7 @@ jobs:
       - name: Create deployment environments in target repo
         uses: actions/github-script@v7
         with:
+          github-token: ${{ secrets.GH_PAT }}
           script: |
             const environments = ${{ steps.get-envs.outputs.result }};
             console.log(environments);
