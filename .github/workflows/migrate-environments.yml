@@ -43,7 +43,12 @@ jobs:
               // console.log(env.deployment_branch_policy);
 
               if (env.deployment_branch_policy === null){
-                return;
+                github.rest.repos.createOrUpdateEnvironment({
+                  owner: 'liatrio-enterprise',
+                  repo: 'calvin-test',
+                  environment_name: env.name,
+                  deployment_branch_policy: null
+                })
               } else {
                 github.rest.repos.createOrUpdateEnvironment({
                   owner: 'liatrio-enterprise',
