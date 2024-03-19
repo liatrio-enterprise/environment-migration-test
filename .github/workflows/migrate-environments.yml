@@ -54,3 +54,64 @@ jobs:
                 wait_timer: env.wait_timer,
               });
             }
+
+      - name: Migrate environment secrets
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const response = ${{ steps.get-envs.outputs.result }};
+      
+            for (const env of response.environments) {
+              const repoID = await github.rest.repos.get({
+                owner: 'liatrio-enterprise',
+                repo: 'environment-migration-test',
+              });
+              console.log(repoID.data.id);
+
+              const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
+                repository_id: repoID.data.id,
+                environment_name: env.name
+              });
+
+              console.log(JSON.stringify(secretsResponse));
+              console.log(secretsResponse.data.secrets);
+      
+              for (const secret of secretsResponse.data.secrets) {
+                console.log(secret.name);
+                // Get the value of the secret
+                const secretValue = await github.rest.actions.getEnvironmentSecret({
+                  repository_id: repoID.data.id,
+                  environment_name: env.name,
+                  secret_name: secret.name,
+                });
+
+                console.log(secretValue.data);
+
+                const octokit = new Octokit({
+                  auth: ${{ secrets.GH_PAT_2 }}
+                })
+
+                const secretKey = await octokit.request('GET /repos/{owner}/{repo}/environments/{environment_name}/secrets/public-key', {
+                  owner: 'liatrio-enterpirse',
+                  repo: 'environment-migration-test',
+                  environment_name: 'ENVIRONMENT_NAME',
+                  headers: {
+                    'X-GitHub-Api-Version': '2022-11-28'
+                  }
+                });
+
+                console.log(secretKey.data);
+      
+                // Migrate the secret to the target repository
+                //await github.rest.actions.createOrUpdateEnvironmentSecret({
+                //  owner: 'liatrio-enterprise',
+                //  repo: 'calvin-test',
+                //  environment_name: env.name,
+                //  secret_name: secret.name,
+                //  encrypted_value: secretValue.data.encrypted_value,
+                //  key_id: secretValue.data.key_id,
+                //});
+              }
+            } 
