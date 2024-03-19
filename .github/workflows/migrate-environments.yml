@@ -94,7 +94,7 @@ jobs:
                 //})
 
                 const secretKey = await github.request('GET /repos/{owner}/{repo}/environments/{environment_name}/secrets/public-key', {
-                  owner: 'liatrio-enterpirse',
+                  owner: 'liatrio-enterprise',
                   repo: 'environment-migration-test',
                   environment_name: 'env.name',
                   headers: {
