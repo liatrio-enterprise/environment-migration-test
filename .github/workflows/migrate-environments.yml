@@ -159,13 +159,13 @@ jobs:
             const envs = ${{ steps.get-sec.outputs.result }};
 
             for (const env of envs) {
-              const issueResut = await github.rest.issues.create({
-                owner: 'liatrio-enterprise',
-                repo: 'calvin-test',
-                title: 'Update secrets for environment: ' + env.name,
-              });
+              //const issueResut = await github.rest.issues.create({
+              //  owner: 'liatrio-enterprise',
+              //  repo: 'calvin-test',
+              //  title: 'Update secrets for environment: ' + env.name,
+              //});
 
-              console.log(issueResut.data);
+              //console.log(issueResut.data);
 
               let issueBody = `Please update the following secrets for the ${env.name} environment:\n`;
 
@@ -175,10 +175,19 @@ jobs:
 
               issueBody += `\n\nOnce the secrets have been updated, please close this issue.`;
 
-              const commentResult = await github.rest.issues.createComment({
+              //const commentResult = await github.rest.issues.createComment({
+              //  owner: 'liatrio-enterprise',
+              //  repo: 'calvin-test',
+              //  issue_number: issueResut.data.number,
+              //  body: issueBody,
+              //});
+
+              const issueResut = await github.rest.issues.create({
                 owner: 'liatrio-enterprise',
                 repo: 'calvin-test',
-                issue_number: issueResut.data.number,
+                title: 'Update secrets for environment: ' + env.name,
                 body: issueBody,
               });
+
+              console.log(issueResut.data);
             }
