@@ -95,6 +95,8 @@ jobs:
                 });
 
                 console.log(secretKey.data);
+
+                const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
       
                 // Migrate the secret to the target repository
                 const secretResponse = await github.rest.actions.createOrUpdateEnvironmentSecret({
@@ -102,7 +104,7 @@ jobs:
                   repo: 'calvin-test',
                   environment_name: env.name,
                   secret_name: secret.name,
-                  encrypted_value: 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==',
+                  encrypted_value: temp,
                   key_id: secretKey.data.key_id,
                 });
 
