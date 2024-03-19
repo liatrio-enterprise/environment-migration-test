@@ -224,13 +224,13 @@ jobs:
               console.log(JSON.stringify(variablesResponse));
               console.log(variablesResponse.data.variables);
       
-              for (const var of variablesResponse.data.variables) {
+              for (const variable of variablesResponse.data.variables) {
 
-                console.log(var.name);
+                console.log(variable.name);
 
                 envObj.vars.push({
-                  name: var.name,
-                  value: var.value
+                  name: variable.name,
+                  value: variable.value
                 });
 
                 envs.push(envObj);
