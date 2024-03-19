@@ -8,7 +8,7 @@ jobs:
   migrate:
     runs-on: ubuntu-latest
     steps:
-      - name: Get deployment environments from source repo
+      - name: Get Deployment Environments from Source Repo
         id: get-envs
         uses: actions/github-script@v7
         with:
@@ -22,7 +22,7 @@ jobs:
 
             return response.data;
 
-      - name: Create deployment environments in target repo
+      - name: Create Deployment Environments in Target Repo
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GH_PAT }}
@@ -55,7 +55,7 @@ jobs:
               });
             }
 
-      - name: Gather environment secrets
+      - name: Gather Environment Secrets
         id: get-sec
         uses: actions/github-script@v7
         with:
@@ -111,7 +111,7 @@ jobs:
             console.log(JSON.stringify(envs));
             return envs;
 
-      - name: Migrate environment secrets
+      - name: Migrate Environment Secrets
         uses: actions/github-script@v7
         with:
           result-encoding: json
@@ -150,7 +150,7 @@ jobs:
               }
             }
 
-      - name: Generate Issues for each environment
+      - name: Generate Issues for Each Environment
         uses: actions/github-script@v7
         with:
           result-encoding: json
@@ -193,25 +193,80 @@ jobs:
             }
 
       - name: Gather Environment Variables
+        id: get-vars
         uses: actions/github-script@v7
         with:
           result-encoding: json
           github-token: ${{ secrets.GH_PAT }}
           script: |
 
-            const envs = ${{ steps.get-sec.outputs.result }};
+            const response = ${{ steps.get-envs.outputs.result }};
+            let envs = [];
+      
+            for (const env of response.environments) {
+              let envObj = {
+                name: env.name,
+                vars: []
+              };
 
-            const repoID = await github.rest.repos.get({
-              owner: 'liatrio-enterprise',
-              repo: 'environment-migration-test',
-            });
+              const repoID = await github.rest.repos.get({
+                owner: 'liatrio-enterprise',
+                repo: 'environment-migration-test',
+              });
 
-            for (const env of envs) {
+              console.log(repoID.data.id);
+
               const variablesResult = await github.rest.actions.listEnvironmentVariables({
                 repository_id: repoID.data.id,
                 environment_name: env.name,
               });
 
-              console.log(variablesResult.data);
+              console.log(JSON.stringify(variablesResponse));
+              console.log(variablesResponse.data.variables);
+      
+              for (const var of variablesResponse.data.variables) {
+
+                console.log(var.name);
+
+                envObj.vars.push({
+                  name: var.name,
+                  value: var.value
+                });
+
+                envs.push(envObj);
+
+              }
+            }
+
+            console.log(JSON.stringify(envs));
+            return envs;
+
+      - name: Migrate Environment Variables
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+
+            const envs = ${{ steps.get-vars.outputs.result }};
+            console.log(JSON.stringify(envs));
+
+            for (const env of envs) {
+              const repoID = await github.rest.repos.get({
+                owner: 'liatrio-enterprise',
+                repo: 'calvin-test',
+              });
+
+              for (const var of env.vars){
+                // Migrate the variable to the target repository
+                const variableResponse = await github.rest.actions.createEnvironmentVariable({
+                  repository_id: repoID.data.id,
+                  environment_name: env.name,
+                  name: var.name,
+                  value: var.value,
+                });
+
+                console.log(variableResponse.data);
+              }
             }
 
