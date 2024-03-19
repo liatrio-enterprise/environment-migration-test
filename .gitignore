@@ -1,3 +1,10 @@
 stoof.json
 stoof.yml
 generate-secret.js
+secret.js
+
+node_modules/
+  ...
+
+package.json
+package-lock.json
