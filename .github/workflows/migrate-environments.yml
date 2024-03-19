@@ -257,13 +257,13 @@ jobs:
                 repo: 'calvin-test',
               });
 
-              for (const var of env.vars){
+              for (const variable of env.vars){
                 // Migrate the variable to the target repository
                 const variableResponse = await github.rest.actions.createEnvironmentVariable({
                   repository_id: repoID.data.id,
                   environment_name: env.name,
-                  name: var.name,
-                  value: var.value,
+                  name: variable.name,
+                  value: variable.value,
                 });
 
                 console.log(variableResponse.data);
