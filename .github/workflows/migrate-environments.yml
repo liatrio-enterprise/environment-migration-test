@@ -74,17 +74,4 @@ jobs:
                 environment_name: env.name,
               });
               console.log(secrets.data.secrets);
-
-              // Recreate secrets in new environment
-              for (const secret of secrets.data.secrets) {
-                const secret_value = /* Retrieve the actual value of the secret from your secure storage */;
-                await github.rest.repos.createOrUpdateEnvironmentSecret({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  secret_name: secret.name,
-                  encrypted_value: secret_value, // This should be the encrypted value of the secret
-                  key_id: secret.key_id,
-                });
-              }
             }
