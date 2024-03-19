@@ -15,8 +15,8 @@ jobs:
           result-encoding: json
           script: |
             const response = await github.rest.repos.getAllEnvironments({
-              owner: 'liatrio-enterprise',
-              repo: 'environment-migration-test',
+              owner: context.repo.owner,
+              repo: context.repo.repo,
             });
             console.log(response.data);
 
@@ -63,7 +63,7 @@ jobs:
               const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null;
 
               await github.rest.repos.createOrUpdateEnvironment({
-                owner: 'liatrio-enterprise',
+                owner: context.repo.owner,
                 repo: 'calvin-test',
                 environment_name: env.name,
                 deployment_branch_policy: env.deployment_branch_policy ? {
