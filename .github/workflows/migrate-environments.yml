@@ -56,18 +56,26 @@ jobs:
             }
 
       - name: Gather environment secrets
+        id: get-sec
         uses: actions/github-script@v7
         with:
           result-encoding: json
-          github-token: ${{ secrets.GH_PAT }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const response = ${{ steps.get-envs.outputs.result }};
+            let envs = [];
       
             for (const env of response.environments) {
+              let envObj = {
+                name: env.name,
+                secrets: []
+              };
+
               const repoID = await github.rest.repos.get({
                 owner: 'liatrio-enterprise',
                 repo: 'environment-migration-test',
               });
+
               console.log(repoID.data.id);
 
               const secretsResponse = await github.rest.actions.listEnvironmentSecrets({
@@ -79,6 +87,7 @@ jobs:
               console.log(secretsResponse.data.secrets);
       
               for (const secret of secretsResponse.data.secrets) {
+
                 console.log(secret.name);
                 // Get the value of the secret
                 const secretValue = await github.rest.actions.getEnvironmentSecret({
@@ -87,28 +96,56 @@ jobs:
                   secret_name: secret.name,
                 });
 
-                console.log(secretValue.data);
-
-                const secretKey = await github.rest.actions.getEnvironmentPublicKey({
-                  repository_id: repoID.data.id,
-                  environment_name: env.name,
+                envObj.secrets.push({
+                  name: secret.name,
+                  value: secretValue.data
                 });
 
-                console.log(secretKey.data);
+                console.log(secretValue.data);
 
-                const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
-      
+                envs.push(envObj);
+
+              }
+            }
+
+            console.log(JSON.stringify(envs));
+            return envs;
+
+      - name: Migrate environment secrets
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+
+            const envs = ${{ steps.get-sec.outputs.result }};
+            console.log(JSON.stringify(envs));
+
+            for (const env of envs) {
+              const repoID = await github.rest.repos.get({
+                owner: 'liatrio-enterprise',
+                repo: 'calvin-test',
+              });
+
+              const secretKey = await github.rest.actions.getEnvironmentPublicKey({
+                repository_id: repoID.data.id,
+                environment_name: env.name,
+              });
+
+              console.log(secretKey.data);
+
+              const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
+
+              for (const sec of envs.secrets){
                 // Migrate the secret to the target repository
                 const secretResponse = await github.rest.actions.createOrUpdateEnvironmentSecret({
-                  owner: 'liatrio-enterprise',
-                  repo: 'calvin-test',
-                  environment_name: env.name,
-                  secret_name: secret.name,
+                  repository_id: repoID.data.id,
+                  environment_name: test,
+                  secret_name: sec.name,
                   encrypted_value: temp,
                   key_id: secretKey.data.key_id,
                 });
 
                 console.log(secretResponse.data);
-
               }
             }
