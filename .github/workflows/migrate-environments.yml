@@ -216,7 +216,7 @@ jobs:
 
               console.log(repoID.data.id);
 
-              const variablesResult = await github.rest.actions.listEnvironmentVariables({
+              const variablesResponse = await github.rest.actions.listEnvironmentVariables({
                 repository_id: repoID.data.id,
                 environment_name: env.name,
               });
