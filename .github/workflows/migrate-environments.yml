@@ -20,24 +20,6 @@ jobs:
             });
             console.log(response.data);
 
-            for (const env of response.data.environments) {
-              console.log(env.name);
-              console.log(env.protection_rules);
-              console.log(env.deployment_branch_policy);
-
-              let wait_timer;
-              if (env.protection_rules) {
-                env.protection_rules.forEach((rule) => {
-                  if (rule.type === 'wait_timer') {
-                    wait_timer = rule.wait_timer;
-                  }
-                });
-              }
-
-              env.wait_timer = wait_timer;
-              console.log(env.wait_timer);
-            }
-
             return response.data;
 
       - name: Create deployment environments in target repo
@@ -46,7 +28,6 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
           script: |
             const environments = ${{ steps.get-envs.outputs.result }};
-            console.log(environments);
 
             for (const env of environments.environments) {
               let wait_timer;
