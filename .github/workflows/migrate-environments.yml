@@ -149,3 +149,36 @@ jobs:
                 console.log(secretResponse.data);
               }
             }
+
+      - name: Generate Issues for each environment
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+            const envs = ${{ steps.get-sec.outputs.result }};
+
+            for (const env of envs) {
+              const issueResut = await github.rest.issues.create({
+                owner: 'liatrio-enterprise',
+                repo: 'calvin-test',
+                title: 'Update secrets for ' + env.name,
+              });
+
+              console.log(issueResut.data);
+
+              let issueBody = `Please update the following secrets for the ${env.name} environment:\n`;
+
+              for (const sec of env.secrets) {
+                issueBody += `- [ ] ${sec.name}\n`;
+              }
+
+              issueBody += `\n\nOnce the secrets have been updated, please close this issue.`;
+
+              const commentResult = await github.rest.issues.createComment({
+                owner: 'liatrio-enterprise',
+                repo: 'calvin-test',
+                issue_number: issueResut.data.number,
+                body: issueBody,
+              });
+            }
