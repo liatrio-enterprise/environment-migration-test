@@ -66,12 +66,3 @@ jobs:
                 } : null,
                 wait_timer: env.wait_timer,
               });
-
-              // List environment secrets
-              const secrets = await github.rest.repos.getEnvironmentSecrets({
-                owner: 'liatrio-enterprise',
-                repo: 'environment-migration-test',
-                environment_name: env.name,
-              });
-              console.log(secrets.data.secrets);
-            }
