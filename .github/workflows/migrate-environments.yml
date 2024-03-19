@@ -96,16 +96,17 @@ jobs:
 
                 console.log(secretKey.data);
       
-                if (env.name === 'test'){
-                  // Migrate the secret to the target repository
-                  await github.rest.actions.createOrUpdateEnvironmentSecret({
-                    owner: 'liatrio-enterprise',
-                    repo: 'calvin-test',
-                    environment_name: env.name,
-                    secret_name: secret.name,
-                    encrypted_value: 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==',
-                    key_id: secretKey.data.key_id,
-                  });
-                }
+                // Migrate the secret to the target repository
+                const secretResponse = await github.rest.actions.createOrUpdateEnvironmentSecret({
+                  owner: 'liatrio-enterprise',
+                  repo: 'calvin-test',
+                  environment_name: env.name,
+                  secret_name: secret.name,
+                  encrypted_value: 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==',
+                  key_id: secretKey.data.key_id,
+                });
+
+                console.log(secretResponse.data);
+
               }
             }
