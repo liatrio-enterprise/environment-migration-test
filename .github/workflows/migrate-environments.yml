@@ -136,7 +136,7 @@ jobs:
 
               const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
 
-              for (const sec of envs.secrets){
+              for (const sec of env.secrets){
                 // Migrate the secret to the target repository
                 const secretResponse = await github.rest.actions.createOrUpdateEnvironmentSecret({
                   repository_id: repoID.data.id,
