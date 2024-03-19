@@ -103,7 +103,7 @@ jobs:
                     repo: 'calvin-test',
                     environment_name: env.name,
                     secret_name: secret.name,
-                    encrypted_value: 'aubRjKK8STUGy7sffqM4WG/WSzHhsa1i17FPSqlItROVindJhBn81pBPlhXuruh66pzstg==',
+                    encrypted_value: 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==',
                     key_id: secretKey.data.key_id,
                   });
                 }
