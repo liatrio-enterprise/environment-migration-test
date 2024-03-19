@@ -162,7 +162,7 @@ jobs:
               const issueResut = await github.rest.issues.create({
                 owner: 'liatrio-enterprise',
                 repo: 'calvin-test',
-                title: 'Update secrets for environment:' + env.name,
+                title: 'Update secrets for environment: ' + env.name,
               });
 
               console.log(issueResut.data);
