@@ -90,7 +90,7 @@ jobs:
                 console.log(secretValue.data);
 
                 const octokit = new Octokit({
-                  auth: ${{ secrets.GH_PAT_2 }}
+                  auth: ${{ secrets.GH_PAT }}
                 })
 
                 const secretKey = await octokit.request('GET /repos/{owner}/{repo}/environments/{environment_name}/secrets/public-key', {
