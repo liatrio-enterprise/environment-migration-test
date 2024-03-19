@@ -191,3 +191,27 @@ jobs:
 
               console.log(issueResut.data);
             }
+
+      - name: Gather Environment Variables
+        uses: actions/github-script@v7
+        with:
+          result-encoding: json
+          github-token: ${{ secrets.GH_PAT }}
+          script: |
+
+            const envs = ${{ steps.get-sec.outputs.result }};
+
+            const repoID = await github.rest.repos.get({
+              owner: 'liatrio-enterprise',
+              repo: 'environment-migration-test',
+            });
+
+            for (const env of envs) {
+              const variablesResult = await github.rest.actions.listEnvironmentVariables({
+                repository_id: repoID.data.id,
+                environment_name: env.name,
+              });
+
+              console.log(variablesResult.data);
+            }
+
