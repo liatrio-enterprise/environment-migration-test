@@ -140,7 +140,7 @@ jobs:
                 // Migrate the secret to the target repository
                 const secretResponse = await github.rest.actions.createOrUpdateEnvironmentSecret({
                   repository_id: repoID.data.id,
-                  environment_name: test,
+                  environment_name: env.name,
                   secret_name: sec.name,
                   encrypted_value: temp,
                   key_id: secretKey.data.key_id,
