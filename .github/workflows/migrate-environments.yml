@@ -89,17 +89,9 @@ jobs:
 
                 console.log(secretValue.data);
 
-                //const octokit = new Octokit({
-                //  auth: ${{ secrets.GH_PAT }}
-                //})
-
-                const secretKey = await github.request('GET /repos/{owner}/{repo}/environments/{environment_name}/secrets/public-key', {
-                  owner: 'liatrio-enterprise',
-                  repo: 'environment-migration-test',
-                  environment_name: 'env.name',
-                  headers: {
-                    'X-GitHub-Api-Version': '2022-11-28'
-                  }
+                const secretKey = await github.rest.actions.getEnvironmentPublicKey({
+                  repository_id: repoID.data.id,
+                  environment_name: env.name,
                 });
 
                 console.log(secretKey.data);
