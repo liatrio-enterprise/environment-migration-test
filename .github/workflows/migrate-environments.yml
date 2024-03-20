@@ -134,7 +134,7 @@ jobs:
         id: encrypt
         run: |
 
-            const sodium = require('libsodium-wrappers')
+            const sodium = require('libsodium-wrappers');
 
             const envList = ${{ steps.get-sec.outputs.result }};
 
@@ -150,7 +150,7 @@ jobs:
               };
   
               const secret = 'BRUH'
-              const key = env.key
+              const key = env.key;
       
               sodium.ready.then(() => {
                 let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
