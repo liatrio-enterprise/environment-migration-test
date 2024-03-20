@@ -91,7 +91,7 @@ jobs:
               });
 
               envObj.key_id = keyResponse.data.key_id;
-              envObj.key = keyResponse.data.public_key;
+              envObj.key = keyResponse.data.key;
 
               console.log(JSON.stringify(secretsResponse));
               console.log(secretsResponse.data.secrets);
