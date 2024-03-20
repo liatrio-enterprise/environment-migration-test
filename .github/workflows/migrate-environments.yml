@@ -68,7 +68,7 @@ jobs:
             for (const env of response.environments) {
               let envObj = {
                 name: env.name,
-                secrets: []
+                secrets: [],
                 key_id: '',
                 key: '',
               };
