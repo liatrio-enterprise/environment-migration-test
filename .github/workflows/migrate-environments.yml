@@ -69,6 +69,8 @@ jobs:
               let envObj = {
                 name: env.name,
                 secrets: []
+                key_id: '',
+                key: '',
               };
 
               const repoID = await github.rest.repos.get({
@@ -83,8 +85,17 @@ jobs:
                 environment_name: env.name
               });
 
+              const keyResponse = await github.rest.actions.getEnvironmentPublicKey({
+                repository_id: repoID.data.id,
+                environment_name: env.name,
+              });
+
+              envObj.key_id = keyResponse.data.key_id;
+              envObj.key = keyResponse.data.public_key;
+
               console.log(JSON.stringify(secretsResponse));
               console.log(secretsResponse.data.secrets);
+              console.log(keyResponse.data);
       
               for (const secret of secretsResponse.data.secrets) {
 
@@ -121,20 +132,14 @@ jobs:
             const envs = ${{ steps.get-sec.outputs.result }};
             console.log(JSON.stringify(envs));
 
+            const repoID = await github.rest.repos.get({
+              owner: 'liatrio-enterprise',
+              repo: 'calvin-test',
+            });
+
+            const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
+
             for (const env of envs) {
-              const repoID = await github.rest.repos.get({
-                owner: 'liatrio-enterprise',
-                repo: 'calvin-test',
-              });
-
-              const secretKey = await github.rest.actions.getEnvironmentPublicKey({
-                repository_id: repoID.data.id,
-                environment_name: env.name,
-              });
-
-              console.log(secretKey.data);
-
-              const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
 
               for (const sec of env.secrets){
                 // Migrate the secret to the target repository
@@ -143,7 +148,7 @@ jobs:
                   environment_name: env.name,
                   secret_name: sec.name,
                   encrypted_value: temp,
-                  key_id: secretKey.data.key_id,
+                  key_id: env.key_id,
                 });
 
                 console.log(secretResponse.data);
@@ -159,13 +164,6 @@ jobs:
             const envs = ${{ steps.get-sec.outputs.result }};
 
             for (const env of envs) {
-              //const issueResut = await github.rest.issues.create({
-              //  owner: 'liatrio-enterprise',
-              //  repo: 'calvin-test',
-              //  title: 'Update secrets for environment: ' + env.name,
-              //});
-
-              //console.log(issueResut.data);
 
               let issueBody = `Please update the following secrets for the ${env.name} environment:\n`;
 
@@ -174,13 +172,6 @@ jobs:
               }
 
               issueBody += `\n\nOnce the secrets have been updated, please close this issue.`;
-
-              //const commentResult = await github.rest.issues.createComment({
-              //  owner: 'liatrio-enterprise',
-              //  repo: 'calvin-test',
-              //  issue_number: issueResut.data.number,
-              //  body: issueBody,
-              //});
 
               const issueResut = await github.rest.issues.create({
                 owner: 'liatrio-enterprise',
