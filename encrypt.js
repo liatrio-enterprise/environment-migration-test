@@ -1,6 +1,16 @@
 const sodium = require('libsodium-wrappers');
 
+if (!process.env.SEC_OUTPUTS_RESULT) {
+    console.error('SEC_OUTPUTS_RESULT is not set');
+    process.exit(1);
+  }
+
 const envList = process.env.SEC_OUTPUTS_RESULT.split(',');
+
+if (!envList.length) {
+    console.error('SEC_OUTPUTS_RESULT is empty');
+    process.exit(1);
+  }
 
 let envs = [];
 
