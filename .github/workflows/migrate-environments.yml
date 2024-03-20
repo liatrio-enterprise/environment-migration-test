@@ -132,41 +132,9 @@ jobs:
   
       - name: Run script and capture output
         id: encrypt
-        run: |
-
-            const sodium = require('libsodium-wrappers');
-
-            const envList = ${{ steps.get-sec.outputs.result }};
-
-            envs = [];
-
-            for (const env of envList) {
-              let envObj = {
-                name: env.name,
-                secrets: env.secrets,
-                key_id: env.key_id,
-                key: env.key,
-                encryptedSecret: '',
-              };
-  
-              const secret = 'BRUH'
-              const key = env.key;
-      
-              sodium.ready.then(() => {
-                let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-                let binsec = sodium.from_string(secret)
-      
-                let encBytes = sodium.crypto_box_seal(binsec, binkey)
-      
-                let output = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
-      
-                envObj.encryptedSecret = output;
-                envs.push(envObj);
-              });
-            }
-
-            conssole.log(JSON.stringify(envs));
-            return envs;
+        env:
+          SEC_OUTPUTS_RESULT: ${{ steps.get-sec.outputs.result }}
+        run: node encrypt.js
 
       - name: Migrate Environment Secrets
         uses: actions/github-script@v7
