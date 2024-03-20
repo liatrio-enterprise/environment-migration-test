@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "libsodium-wrappers": "^0.7.13",
+    "sodium": "^3.0.2"
+  }
+}
