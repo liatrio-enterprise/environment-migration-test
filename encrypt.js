@@ -2,7 +2,8 @@ const sodium = require('libsodium-wrappers');
 
 const envs = process.env.ENVS;
 const secret = 'BRUH';
-const key = envs[0].key;
+// const key = envs[0].key;
+const key = '9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM='
 
 //Check if libsodium is ready and then proceed.
 sodium.ready.then(() => {
