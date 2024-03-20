@@ -1,7 +1,7 @@
 const sodium = require('libsodium-wrappers');
 
-// const envs = process.env.ENVS;
-const envs = [{"name":"test","secrets":[{"name":"TEST_SECRET","value":{"name":"TEST_SECRET","created_at":"2024-03-18T16:55:03Z","updated_at":"2024-03-19T21:58:28Z"}}],"key_id":"3380204578043523366","key":"9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM="}];
+const envs = process.env.ENVS;
+// const envs = [{"name":"test","secrets":[{"name":"TEST_SECRET","value":{"name":"TEST_SECRET","created_at":"2024-03-18T16:55:03Z","updated_at":"2024-03-19T21:58:28Z"}}],"key_id":"3380204578043523366","key":"9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM="}];
 console.log("ENVS Output");
 console.log(envs);
 const secret = 'BRUH';
