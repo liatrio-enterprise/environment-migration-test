@@ -7,11 +7,11 @@ console.log(envs);
 const secret = 'BRUH';
 // const key = envs.secrets[0].key;
 // const key = '9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM='
-let key = '';
+// let key = '';
 
 let newEnvs = [];
 
-processEnvs(envs);
+processEnvs(envs, secret);
 
 // for ( const env of envs){
 //     let envObj = {
@@ -69,8 +69,7 @@ async function encryptSecrets(key, secret){
     return result;
 }
 
-async function processEnvs(envs) {
-    const newEnvs = [];
+async function processEnvs(envs, secret) {
 
     for (const env of envs) {
         let envObj = {
@@ -80,7 +79,7 @@ async function processEnvs(envs) {
             key: env.key,
             encrypted: '',
         };
-        let key = env.key;
+        const key = env.key;
         console.log("Key: " + key);
 
         envObj.encrypted = await encryptSecrets(key, secret);
