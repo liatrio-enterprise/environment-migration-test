@@ -32,7 +32,7 @@ jobs:
             for (const env of environments.environments) {
               let wait_timer;
               if (env.protection_rules) {
-                cosnsole.log(env.protection_rules);
+                console.log(env.protection_rules);
                 env.protection_rules.forEach((rule) => {
                   if (rule.type === 'wait_timer') {
                     wait_timer = rule.wait_timer;
