@@ -12,7 +12,8 @@ const secret = 'BRUH';
 
 let newEnvs = [];
 
-processEnvs(envs, secret);
+const result = processEnvs(envs, secret);
+return result;
 
 // for ( const env of envs){
 //     let envObj = {
