@@ -2,8 +2,8 @@ const sodium = require('libsodium-wrappers');
 const core = require('@actions/core');
 
 // const envs = process.env.ENVS;
-const envs = JSON.parse(process.env.ENVS);
-// const envs = [{"name":"test","secrets":[{"name":"TEST_SECRET","value":{"name":"TEST_SECRET","created_at":"2024-03-18T16:55:03Z","updated_at":"2024-03-19T21:58:28Z"}}],"key_id":"3380204578043523366","key":"9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM="}];
+// const envs = JSON.parse(process.env.ENVS);
+const envs = [{"name":"test","secrets":[{"name":"TEST_SECRET","value":{"name":"TEST_SECRET","created_at":"2024-03-18T16:55:03Z","updated_at":"2024-03-19T21:58:28Z"}}],"key_id":"3380204578043523366","key":"9xcikbh/ZnM2sApwzd/s+6L3BliMaxVLSuW14GcHVlM="}];
 console.log("ENVS Output");
 console.log(envs);
 const secret = 'BRUH';
@@ -13,10 +13,7 @@ const secret = 'BRUH';
 
 let newEnvs = [];
 
-const result = processEnvs(envs, secret);
-// After your logic, set the output
-core.setOutput('encrypted_output', result);
-// return result;
+processEnvs(envs, secret);
 
 // for ( const env of envs){
 //     let envObj = {
@@ -94,5 +91,6 @@ async function processEnvs(envs, secret) {
     // Show results
     console.log("Showing Results");
     console.log(newEnvs);
-    return newEnvs;
+    core.setOutput('encrypted_output', newEnvs);
+    // return newEnvs;
 }
