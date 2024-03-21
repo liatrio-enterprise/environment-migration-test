@@ -140,6 +140,8 @@ jobs:
           ENVS: ${{ steps.get-sec.outputs.result }}
 
       - name: Migrate Environment Secrets
+        env:
+          ENVS: ${{ steps.encrypt.outputs.result }}
         uses: actions/github-script@v7
         with:
           result-encoding: json
@@ -150,6 +152,9 @@ jobs:
             // const envs2 = ${{ steps.encrypt.outputs.result }};
             console.log(JSON.stringify(envs));
             // console.log(JSON.stringify(envs2));
+
+            // console.log(process.env.ENVS);
+            console.log(JSON.stringify(process.env.ENVS));
 
             const repoID = await github.rest.repos.get({
               owner: 'liatrio-enterprise',
