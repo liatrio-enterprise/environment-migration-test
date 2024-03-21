@@ -158,7 +158,7 @@ jobs:
               repo: 'calvin-test',
             });
 
-            const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
+            // const temp = 'S0LZjwp5CEf7SDF5YUKUuqnUlQ75pNMPMmtHaLTLeg96OOotB7hfAlLpi1eB1sBZz/REjQ==';
 
             for (const env of envs) {
 
@@ -168,7 +168,7 @@ jobs:
                   repository_id: repoID.data.id,
                   environment_name: env.name,
                   secret_name: sec.name,
-                  encrypted_value: temp,
+                  encrypted_value: env.encrypted,
                   key_id: env.key_id,
                 });
 
