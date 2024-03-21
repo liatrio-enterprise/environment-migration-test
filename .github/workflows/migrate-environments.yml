@@ -24,4 +24,4 @@ jobs:
         id: encrypt
         run: node stoof.js
         env:
-          ENVS: ${{ secrets.GH_PAT }}
+          GH_PAT: ${{ secrets.GH_PAT }}
