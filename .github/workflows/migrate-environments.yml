@@ -148,12 +148,9 @@ jobs:
           github-token: ${{ secrets.GH_PAT }}
           script: |
 
-            const envs = ${{ steps.get-sec.outputs.result }};
-            // const envs2 = ${{ steps.encrypt.outputs.result }};
-            console.log(JSON.stringify(envs));
-            // console.log(JSON.stringify(envs2));
-
-            // console.log(process.env.ENVS);
+            // const envs = ${{ steps.get-sec.outputs.result }};
+            // console.log(JSON.stringify(envs));
+            const envs = JSON.parse(process.env.ENVS);
             console.log(JSON.stringify(process.env.ENVS));
 
             const repoID = await github.rest.repos.get({
