@@ -1,4 +1,5 @@
 const sodium = require('libsodium-wrappers');
+const core = require('@actions/core');
 
 // const envs = process.env.ENVS;
 const envs = JSON.parse(process.env.ENVS);
@@ -13,7 +14,9 @@ const secret = 'BRUH';
 let newEnvs = [];
 
 const result = processEnvs(envs, secret);
-return result;
+// After your logic, set the output
+core.setOutput('encrypted_output', result);
+// return result;
 
 // for ( const env of envs){
 //     let envObj = {

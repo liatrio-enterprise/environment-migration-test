@@ -141,7 +141,7 @@ jobs:
 
       - name: Migrate Environment Secrets
         env:
-          ENVS: ${{ steps.encrypt.outputs.result }}
+          ENVS: ${{ steps.encrypt.outputs.encrypted_output }}
         uses: actions/github-script@v7
         with:
           result-encoding: json
