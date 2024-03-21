@@ -36,6 +36,8 @@ jobs:
                 env.protection_rules.forEach((rule) => {
                   if (rule.type === 'wait_timer') {
                     wait_timer = rule.wait_timer;
+                  } else if (rule.type === 'required_reviewers'){
+                    console.log(rule.required_reviewers);
                   }
                 });
               }
