@@ -20,8 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Encrypt secrets
+      - name: Migrate
         id: encrypt
-        run: node stoof.js
+        run: node migrate-environments.js
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
