@@ -81,8 +81,8 @@ async function migrateEnvironments() {
   const secretsEncrypt = await processEnvs(secrets, secretValue)
   await migrateSecrets(secretsEncrypt)
   
-  const variables = await getEnvironmentVariables(environments)
-  await migrateVariables(variables)
+  // const variables = await getEnvironmentVariables(environments)
+  // await migrateVariables(variables)
   
   await generateIssuesForRequiredReviewers(envList)
   await generateIssuesForEnvironmentSecrets(secrets)
