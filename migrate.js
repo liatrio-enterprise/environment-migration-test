@@ -189,11 +189,11 @@ async function migrateSecrets(secrets) {
 
   for (const env of secrets) {
     for (const sec of env.secrets) {
-      const secretResponse = await octokitTarget.rest.actions.createOrUpdateEnvironmentSecret({
+        await octokitTarget.rest.actions.createOrUpdateEnvironmentSecret({
         repository_id: repoId.data.id,
         environment_name: env.name,
         secret_name: sec.name,
-        encrypted_value: sec.encrypted,
+        encrypted_value: env.encrypted,
         key_id: env.key_id,
       })
     }
