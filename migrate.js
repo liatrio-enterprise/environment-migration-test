@@ -2,17 +2,15 @@ const { Octokit }  = require('@octokit/rest');
 const fs = require('fs');
 const csv = require('csv-parser');
 
-const GH_PAT_SOURCE = process.env.GH_PAT_SOURCE;
-
 const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
 const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
 
 const octokitSource = new Octokit({
-  auth: GH_PAT_SOURCE,
+  auth: process.env.GH_PAT_SOURCE,
 });
 
 const octokitTarget = new Octokit({
-  auth: GH_PAT_TARGET,
+  auth: process.env.GH_PAT_TARGET,
 });
 
 async function migrateEnvironments() {
