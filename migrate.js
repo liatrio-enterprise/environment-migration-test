@@ -12,7 +12,7 @@ const octokitSource = new Octokit({
 });
 
 async function migrateEnvironments() {
-  const {data: environments} = await octokitSource.repos.getContent(sourceRepo)
+  const {data: environments} = await octokitSource.repos.getAllEnvironments(sourceRepo)
   console.log("Environments: ", environments)
 
   let userMap = new Map()
