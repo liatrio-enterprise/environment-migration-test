@@ -23,4 +23,4 @@ jobs:
       run: npm install
 
     - name: Run script
-      run: node migrate-env.js
+      run: node migrate.js
