@@ -15,10 +15,10 @@ migrateEnvironments().catch(console.error);
 ////////// functions //////////
 
 async function migrateEnvironments() {
-    // const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
-    // const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
-    const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO };
-    const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TERGET_REPO };
+    const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
+    const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
+    // const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO };
+    // const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TERGET_REPO };
   
     // Get Deployment Environments from Source Repo
     const { data: environments } = await octokit.rest.repos.getAllEnvironments(sourceRepo);
