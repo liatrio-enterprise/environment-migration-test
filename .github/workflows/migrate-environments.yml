@@ -25,4 +25,5 @@ jobs:
     - name: Run script
       env:
         GH_PAT_SOURCE: ${{ secrets.GH_PAT_SOURCE }}
+        GH_PAT_TARGET: ${{ secrets.GH_PAT_TARGET }}
       run: node migrate.js
