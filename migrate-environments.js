@@ -2,10 +2,8 @@ const { Octokit } = require("@octokit/rest");
 const sodium = require('libsodium-wrappers');
 const core = require('@actions/core');
 
-const GH_PAT = process.env.GH_PAT;
-
 const octokit = new Octokit({
-  auth: GH_PAT,
+  auth: process.env.GH_PAT,
 });
 
 const secretValue = 'BRUH';
