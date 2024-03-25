@@ -29,6 +29,7 @@ const octokitSource = new Octokit({
 async function migrateEnvironments() {
     // Get Deployment Environments from Source Repo
     const { data: environments } = await octokitSource.rest.repos.getAllEnvironments(sourceRepo);
+    console.log("Environments: " + JSON.stringify(environments));
 
     let usersMap = new Map();​
     try {
@@ -74,7 +75,7 @@ async function migrateEnvironments() {
 
         const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null;
         const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null;
-        
+
         await octokitSource.rest.repos.createOrUpdateEnvironment({
           owner: targetRepo.owner,
           repo: targetRepo.repo,
