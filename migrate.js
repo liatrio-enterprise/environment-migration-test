@@ -171,7 +171,7 @@ async function processEnvs(envs, secret) {
 }
 
 async function encryptSecrets(key, secret) {
-  const result = await sodium_version_string.ready.then(() => {
+  const result = await sodium.ready.then(() => {
     let binKey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
     let binSec = sodium.from_string(secret)
     let encBytes = sodium.crypto_box_seal(binSec, binKey)
