@@ -15,7 +15,7 @@ async function migrateEnvironments() {
   const {data: environments} = await octokitSource.repos.getAllEnvironments(sourceRepo)
   console.log("Environments: ", environments)
 
-  let userMap = new Map()
+  let usersMap = new Map()
   try {
     usersMap = await generateUserMap()
     console.log("generate user map: ")
@@ -69,6 +69,8 @@ async function migrateEnvironments() {
       wait_timer: env.wait_timer,
     });
   }
+
+  generateIssuesForRequiredReviewers(targetRepo, envList)
   console.log("envList");
   console.log(envList);
 }
@@ -89,6 +91,33 @@ async function generateUserMap() {
           reject(error);
       });
   });
+}
+
+async function generateIssuesForRequiredReviewers(repo, envList) {
+  let reviewers = false
+
+  for (const env of envList) {
+    let issueBody = `Please update the following reviewers for the \`${env.env}\` environment:\n`
+
+    for (const reviewer of env.reviewerList) {
+      issueBody += `- [ ] \`${reviewer}\`\n`;
+      reviewers = true;
+    }
+
+    issueBody += `\nProtection Rule \`prevent_self_review\` is set to \`${env.prevent_self_review}\`, Please set accordingly in Protection Rules.\n`;
+    issueBody += `\n\nPlease update the reviewers for the \`${env.env}\` environment by adding the correct users as reviewers. If you are unsure who to add, please reach out to the team for guidance.`;
+    issueBody += `\n\nOnce the reviewers have been updated, please close this issue.`;
+
+    if (reviewers) {
+      const issueResult = await octokitTarget.rest.issues.create({
+          owner: repo.owner,
+          repo: repo.repo,
+          title: 'Update reviewers for environment: ' + `\`${env.env}\``,
+          body: issueBody,
+      });
+      console.log(issueResult.data);
+    }
+  }
 }
 
 migrateEnvironments().catch(console.error);
