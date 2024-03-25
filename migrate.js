@@ -54,8 +54,6 @@ async function migrateEnvironments() {
       });
     }
     env.wait_timer = wait_timer;
-    console.log("envList");
-    console.log(envList);
 
     const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null;
     const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null;
@@ -71,6 +69,8 @@ async function migrateEnvironments() {
       wait_timer: env.wait_timer,
     });
   }
+  console.log("envList");
+  console.log(envList);
 }
 
 async function generateUserMap() {
