@@ -213,8 +213,8 @@ async function generateIssuesForRequiredReviewers(envList) {
 
     if (reviewers) {
       const issueResult = await octokitTarget.rest.issues.create({
-          owner: targetReporepo.owner,
-          repo: targetReporepo.repo,
+          owner: targetRepo.owner,
+          repo: targetRepo.repo,
           title: 'Update reviewers for environment: ' + `\`${env.env}\``,
           body: issueBody,
       });
