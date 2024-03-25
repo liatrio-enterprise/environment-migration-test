@@ -15,11 +15,14 @@ migrateEnvironments().catch(console.error);
 ////////// functions //////////
 
 async function migrateEnvironments() {
-    const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
-    const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
+    // const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
+    // const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
+    const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO };
+    const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TERGET_REPO };
   
     // Get Deployment Environments from Source Repo
     const { data: environments } = await octokit.rest.repos.getAllEnvironments(sourceRepo);
+    console.log("Environments: " + JSON.stringify(environments));
   
     // Create Deployment Environments in Target Repo
     // for (const env of environments.environments) {
@@ -60,27 +63,25 @@ async function migrateEnvironments() {
           wait_timer: env.wait_timer,
         });
       }
+  
+    // // Gather Environment Secrets
+    // const secrets = await gatherEnvironmentSecrets(sourceRepo, environments);
+    // console.log("Secrets: " + JSON.stringify(secrets));
 
-    console.log("Environments: " + JSON.stringify(environments));
+    // const secrets2 = await processEnvs(secrets, secretValue);
+    // console.log("Secrets2: " + JSON.stringify(secrets2));
   
-    // Gather Environment Secrets
-    const secrets = await gatherEnvironmentSecrets(sourceRepo, environments);
-    console.log("Secrets: " + JSON.stringify(secrets));
+    // // Migrate Environment Secrets
+    // await migrateEnvironmentSecrets(targetRepo, secrets2);
+  
+    // // Gather Environment Variables
+    // const variables = await gatherEnvironmentVariables(sourceRepo, environments);
+  
+    // // Migrate Environment Variables
+    // await migrateEnvironmentVariables(targetRepo, variables);
 
-    const secrets2 = await processEnvs(secrets, secretValue);
-    console.log("Secrets2: " + JSON.stringify(secrets2));
-  
-    // Migrate Environment Secrets
-    await migrateEnvironmentSecrets(targetRepo, secrets2);
-  
-    // Gather Environment Variables
-    const variables = await gatherEnvironmentVariables(sourceRepo, environments);
-  
-    // Migrate Environment Variables
-    await migrateEnvironmentVariables(targetRepo, variables);
-
-    // Created Issues for migrated secrets
-    await generateIssuesForEnvironments(secrets);
+    // // Created Issues for migrated secrets
+    // await generateIssuesForEnvironments(secrets);
 }
 
 async function processEnvs(envs, secret) {
