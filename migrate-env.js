@@ -30,7 +30,7 @@ async function migrateEnvironments() {
     // Get Deployment Environments from Source Repo
     const { data: environments } = await octokitSource.rest.repos.getAllEnvironments(sourceRepo);
     console.log("Environments: " + JSON.stringify(environments));
-    
+
     let usersMap = new Map();​
     try {
         usersMap = await generateUserMap();
@@ -56,7 +56,7 @@ async function migrateEnvironments() {
             if (rule.type === 'wait_timer') {
               wait_timer = rule.wait_timer;
             } else if (rule.type === 'required_reviewers'){
-              //console.log(rule.reviewers);
+              console.log(rule.reviewers);
               if (rule.prevent_self_review === true) {
                 envObj.prevent_self_review = true;
               }
