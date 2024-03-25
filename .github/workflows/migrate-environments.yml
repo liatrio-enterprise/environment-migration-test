@@ -3,11 +3,10 @@ name: Migrate Environments
 
 on:
   pull_request:
-    branches:
-      - migration-test
     types:
       - opened
       - synchronize
+      - reopened
 
 jobs:
   build:
