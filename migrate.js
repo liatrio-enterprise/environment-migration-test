@@ -200,11 +200,28 @@ async function migrateSecrets(secrets) {
   }
 }
 
+async function generateIssuesForEnvironmentSecrets(secrets) {
+  for (const env of secrets) {
+    let issueBody = `Please add the following secrets for the \`${env.name}\` environment. Once the secrets have been added, please close this issue.\n`
+
+    for (const sec of env.secrets) {
+      issueBody += `- [ ] \`${sec.name}\`\n`;
+    }
+
+    await octokitTarget.rest.issues.create({
+        owner: targetRepo.owner,
+        repo: targetRepo.repo,
+        title: 'Update secrets for environment: ' + `\`${env.name}\``,
+        body: issueBody,
+    });
+  }
+}
+
 async function generateIssuesForRequiredReviewers(envList) {
   let reviewers = false
 
   for (const env of envList) {
-    let issueBody = `Please add the following reviewers for the \`${env.env}\` environment. Once the reviewers have been added, this issue can be closed.\n`
+    let issueBody = `Please add the following reviewers for the \`${env.env}\` environment. Once the reviewers have been added, please close this issue.\n`
 
     for (const reviewer of env.reviewerList) {
       issueBody += `- [ ] \`${reviewer}\`\n`;
