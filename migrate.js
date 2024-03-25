@@ -1,9 +1,10 @@
-const { Octokit }  = require('@octokit/rest');
-const fs = require('fs');
-const csv = require('csv-parser');
+const { Octokit }  = require('@octokit/rest')
+const fs = require('fs')
+const csv = require('csv-parser')
+const sodium = require('libsodium-wrappers')
 
-const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' };
-const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' };
+const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' }
+const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' }
 
 const octokitSource = new Octokit({
   auth: process.env.GH_PAT_SOURCE,
@@ -33,7 +34,7 @@ async function migrateEnvironments() {
   let envList = []
 
   for (const env of environments.environments) {
-    let wait_timer;
+    let wait_timer
     let envObj = { 
         env: env.name,
         reviewerList: reviewerList,
@@ -43,7 +44,7 @@ async function migrateEnvironments() {
       console.log(env.protection_rules);
       env.protection_rules.forEach((rule) => {
         if (rule.type === 'wait_timer') {
-          wait_timer = rule.wait_timer;
+          wait_timer = rule.wait_timer
         } else if (rule.type === 'required_reviewers'){
           //console.log(rule.reviewers);
           if (rule.prevent_self_review === true) {
@@ -54,14 +55,14 @@ async function migrateEnvironments() {
             reviewerList.push(reviewer.reviewer.login );
           }
           envObj.reviewerList = reviewerList;
-          envList.push(envObj);
+          envList.push(envObj)
         }
       });
     }
-    env.wait_timer = wait_timer;
+    env.wait_timer = wait_timer
 
-    const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null;
-    const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null;
+    const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null
+    const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null
 
     await octokitSource.rest.repos.createOrUpdateEnvironment({
       owner: targetRepo.owner,
