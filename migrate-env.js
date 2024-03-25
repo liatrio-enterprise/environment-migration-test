@@ -88,9 +88,9 @@ async function migrateEnvironments() {
         });
       }
 
-    //console.log("Environments: " + JSON.stringify(environments));
-    //console.log("envList outside of loop");
-    //console.log(envList);
+    // console.log("Environments: " + JSON.stringify(environments));
+    // console.log("envList outside of loop");
+    // console.log(envList);
 
     // // Created Issues for migrated reviewers
     // await generateIssuesForEnvironmentsReviewers(targetRepo, envList);
@@ -106,17 +106,17 @@ async function migrateEnvironments() {
     // // Migrate Environment Secrets
     // await migrateEnvironmentSecrets(targetRepo, secretsEncrypt);
   
-    // // Gather Environment Variables
-    // const variables = await gatherEnvironmentVariables(sourceRepo, environments);
+    // Gather Environment Variables
+    const variables = await gatherEnvironmentVariables(sourceRepo, environments);
   
-    // // Migrate Environment Variables
-    // await migrateEnvironmentVariables(targetRepo, variables);
+    // Migrate Environment Variables
+    await migrateEnvironmentVariables(targetRepo, variables);
 
-    // // Created Issues for migrated secrets
-    // await generateIssuesForEnvironmentsSecrets(targetRepo, secrets);
+    // Created Issues for migrated secrets
+    await generateIssuesForEnvironmentsSecrets(targetRepo, secrets);
 
-    // console.log("Environment Migration Complete");
-    // console.log('\n');
+    console.log("Environment Migration Complete");
+    console.log('\n');
 }
 
 async function processEnvs(envs, secret) {
