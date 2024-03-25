@@ -11,6 +11,10 @@ const octokitSource = new Octokit({
   auth: GH_PAT_SOURCE,
 });
 
+const octokitTarget = new Octokit({
+  auth: GH_PAT_TARGET,
+});
+
 async function migrateEnvironments() {
   const {data: environments} = await octokitSource.repos.getAllEnvironments(sourceRepo)
   console.log("Environments: ", environments)
