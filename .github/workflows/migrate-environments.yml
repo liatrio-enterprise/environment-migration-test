@@ -1,20 +1,29 @@
-name: Migrate environments
+
+name: Migrate Environments
 
 on:
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  migrate:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get deployment environments from source repo
-        id: get-envs
-        uses: actions/github-script@v4
-        with:
-          script: |
-            const response = await github.rest.repos.getAllEnvironments({
-              owner: 'liatrio-enterprise',
-              repo: 'environment-migration-test',
-            });
-            console.log(response.data);
-            return response.data;
+    - uses: actions/checkout@v2
+
+    - name: Use Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Run script
+      env:
+        GH_PAT_SOURCE: ${{ secrets.GH_PAT_SOURCE }}
+        GH_PAT_TARGET: ${{ secrets.GH_PAT_TARGET }}
+      run: node migrate.js
