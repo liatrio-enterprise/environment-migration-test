@@ -3,8 +3,8 @@ const fs = require('fs')
 const csv = require('csv-parser')
 const sodium = require('libsodium-wrappers')
 
-const sourceRepo = { owner: 'liatrio-enterprise', repo: 'environment-migration-test' }
-const targetRepo = { owner: 'liatrio-enterprise', repo: 'calvin-test' }
+const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO }
+const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REPO }
 
 const octokitSource = new Octokit({
   auth: process.env.GH_PAT_SOURCE,
