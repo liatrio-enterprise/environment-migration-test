@@ -237,7 +237,7 @@ async function migrateVariables(variables) {
       repo: targetRepo.repo,
     })
     for (const variable of env.vars) {
-      await octokitTarget.rest.repos.createEnvironmentVariable({
+      await octokitTarget.rest.actions.createEnvironmentVariable({
         repository_id: repoId.data.id,
         environment_name: env.name,
         name: variable.name,
