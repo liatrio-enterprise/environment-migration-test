@@ -81,8 +81,8 @@ async function migrateEnvironments() {
   const secretsEncrypt = await processEnvs(secrets, secretValue)
   await migrateSecrets(secretsEncrypt)
   
-  // const variables = await getEnvironmentVariables(environments)
-  // await migrateVariables(variables)
+  const variables = await getEnvironmentVariables(environments)
+  await migrateVariables(variables)
   
   await generateIssuesForRequiredReviewers(envList)
   await generateIssuesForEnvironmentSecrets(secrets)
@@ -195,6 +195,53 @@ async function migrateSecrets(secrets) {
         secret_name: sec.name,
         encrypted_value: env.encrypted,
         key_id: env.key_id,
+      })
+    }
+  }
+}
+
+async function getEnvironmentVariables(environments) {
+  let envs = []
+
+  for (const env of environments.environments) {
+    let envObj = {
+      name: env.name,
+      vars: [],
+    }
+
+    const repoId = await octokitSource.rest.repos.get({
+      owner: sourceRepo.owner,
+      repo: sourceRepo.repo,
+    })
+
+    const variablesResponse = await octokitSource.rest.repos.listEnvironmentSecrets({
+      repository_id: repoId.data.id,
+      environment_name: env.name,
+    })
+
+    for (const variable of variablesResponse.data.variables) {
+      envObj.vars.push({
+        name: variable.name,
+        value: variable.value,
+      })
+      envs.push(envObj)
+    }
+  }
+  return envs
+}
+
+async function migrateVariables(variables) {
+  for (const env of variables) {
+    const repoId = await octokitTarget.rest.repos.get({
+      owner: targetRepo.owner,
+      repo: targetRepo.repo,
+    })
+    for (const variable of env.vars) {
+      await octokitTarget.rest.repos.createEnvironmentVariable({
+        repository_id: repoId.data.id,
+        environment_name: env.name,
+        name: variable.name,
+        value: variable.value,
       })
     }
   }
