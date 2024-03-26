@@ -214,7 +214,7 @@ async function getEnvironmentVariables(environments) {
       repo: sourceRepo.repo,
     })
 
-    const variablesResponse = await octokitSource.rest.repos.listEnvironmentSecrets({
+    const variablesResponse = await octokitSource.rest.repos.listEnvironmentVariables({
       repository_id: repoId.data.id,
       environment_name: env.name,
     })
