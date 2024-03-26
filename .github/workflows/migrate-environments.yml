@@ -2,11 +2,22 @@
 name: Migrate Environments
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
+  workflow_dispatch:
+    inputs:
+      source_org:
+        description: 'Source organization'
+        required: true
+        default: 'liatrio-enterprise'
+      source_repo:
+        description: 'Source repository'
+        required: true
+      target_org:
+        description: 'Target organization'
+        required: true
+        default: 'liatrio-enterprise'
+      target_repo:
+        description: 'Target repository'
+        required: true
 
 jobs:
   build:
@@ -24,6 +35,10 @@ jobs:
 
     - name: Run script
       env:
+        SOURCE_ORG: ${{ github.event.inputs.source_org }}
+        SOURCE_REPO: ${{ github.event.inputs.source_repo }}
+        TARGET_ORG: ${{ github.event.inputs.target_org }}
+        TARGET_REPO: ${{ github.event.inputs.target_repo }}
         GH_PAT_SOURCE: ${{ secrets.GH_PAT_SOURCE }}
         GH_PAT_TARGET: ${{ secrets.GH_PAT_TARGET }}
       run: node migrate.js
