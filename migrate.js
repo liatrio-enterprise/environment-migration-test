@@ -7,6 +7,11 @@ const { get } = require('http')
 const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO }
 const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REPO }
 
+console.log("Source Repo: ", sourceRepo)
+console.log("Target Repo: ", targetRepo)
+console.log("GH_PAT_SOURCE: ", process.env.GH_PAT_SOURCE)
+console.log("GH_PAT_TARGET: ", process.env.GH_PAT_TARGET)
+
 const octokitSource = new Octokit({
   auth: process.env.GH_PAT_SOURCE,
 });
@@ -56,12 +61,16 @@ async function migrateEnvironments() {
           }
           for (const reviewer of rule.reviewers) {
             console.log("reviewer:", reviewer.reviewer);
-            const userEmail = await getUserEmail(reviewer.reviewer.login)
-            if(usersMap.has(userEmail)) {
+            console.log("reviewer login:", reviewer.reviewer.login);
+            const userOBJ = await getUserEmail(reviewer.reviewer.login)
+            console.log("User email: ", userOBJ.email)
+            if(usersMap.has(userOBJ.email)) {
               console.log("Found a match for: ", reviewer.reviewer.login)
-              const userEmu = usersMap.get(userEmail);
-              console.log("Emu: ", userEmu)
-              emuReviewersArray.push({ login: userEmu });
+              //const userEmu = usersMap.get(userOBJ.email);
+              const userEmuId = userOBJ.id;  
+              const userEmuType =  userOBJ.type
+              //console.log("Emu: ", userEmu)
+              emuReviewersArray.push({ id: userEmuId, type: userEmuType });
             }
             reviewerList.push(reviewer.reviewer);
           }
@@ -100,6 +109,7 @@ async function migrateEnvironments() {
     const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null
     const custom_branch_policies = env.deployment_branch_policy ? env.deployment_branch_policy.custom_branch_policies : null
 
+    // Uncomment When Needed
     await octokitSource.rest.repos.createOrUpdateEnvironment({
       owner: targetRepo.owner,
       repo: targetRepo.repo,
@@ -139,10 +149,21 @@ async function generateUserMap() {
 }
 
 async function getUserEmail(login) {
+  let userOBJ = {
+    login: '',
+    id: 0, 
+    type: '',
+    email: '',
+  }
   const user = await octokitSource.request('GET /users/{username}', {
     username: login,
   })
-  return user.data.email
+  userOBJ.login = user.data.login;
+  userOBJ.id = user.data.id;
+  userOBJ.type = user.data.type;
+  userOBJ.email = user.data.email;
+  console.log("User Object: ", userOBJ);
+  return userOBJ;
 }
 
 async function getEnvironmentSecrets(environments) {
