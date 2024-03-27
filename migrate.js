@@ -2,6 +2,7 @@ const { Octokit }  = require('@octokit/rest')
 const fs = require('fs')
 const csv = require('csv-parser')
 const sodium = require('libsodium-wrappers')
+const { get } = require('http')
 
 const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO }
 const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REPO }
@@ -19,30 +20,33 @@ let newEnvs = []
 
 async function migrateEnvironments() {
   const {data: environments} = await octokitSource.repos.getAllEnvironments(sourceRepo)
-  console.log("Environments: ", environments)
+  // console.log("Environments: ", environments)
 
-  // let usersMap = new Map()
-  // try {
-  //   usersMap = await generateUserMap()
-  //   console.log("generate user map: ")
-  //   console.log(usersMap)
-  // } catch(error) {
-  //   console.error(error)
-  // }
+  let usersMap = new Map()
+  try {
+    usersMap = await generateUserMap()
+    console.log("user map: ")
+    console.log(usersMap)
+  } catch(error) {
+    console.error(error)
+  }
 
   let reviewerList = []
   let envList = []
 
   for (const env of environments.environments) {
+    console.log("Environment: ", env)
     let wait_timer
     let envObj = { 
         env: env.name,
         reviewerList: reviewerList,
         prevent_self_review: false,
     };
+    let emuReviewersArray = []
     if (env.protection_rules) {
-      console.log(env.protection_rules);
-      env.protection_rules.forEach((rule) => {
+      // console.log("Protection rules: ")
+      // console.log(env.protection_rules);
+      for (const rule of env.protection_rules) {
         if (rule.type === 'wait_timer') {
           wait_timer = rule.wait_timer
         } else if (rule.type === 'required_reviewers'){
@@ -51,14 +55,46 @@ async function migrateEnvironments() {
             envObj.prevent_self_review = true;
           }
           for (const reviewer of rule.reviewers) {
-            //console.log(reviewer.reviewer.login);
-            reviewerList.push(reviewer.reviewer.login );
+            console.log("reviewer:", reviewer.reviewer);
+            const userEmail = await getUserEmail(reviewer.reviewer.login)
+            if(usersMap.has(userEmail)) {
+              console.log("Found a match for: ", reviewer.reviewer.login)
+              const userEmu = usersMap.get(userEmail);
+              console.log("Emu: ", userEmu)
+              emuReviewersArray.push({ login: userEmu });
+            }
+            reviewerList.push(reviewer.reviewer);
           }
           envObj.reviewerList = reviewerList;
           envList.push(envObj)
         }
-      });
+      }
+      // env.protection_rules.forEach((rule) => {
+      //   if (rule.type === 'wait_timer') {
+      //     wait_timer = rule.wait_timer
+      //   } else if (rule.type === 'required_reviewers'){
+      //     //console.log(rule.reviewers);
+      //     if (rule.prevent_self_review === true) {
+      //       envObj.prevent_self_review = true;
+      //     }
+      //     for (const reviewer of rule.reviewers) {
+      //       console.log("reviewer:", reviewer.reviewer);
+      //       const user = await octokitSource.users.getByUsername({ username: login });
+      //       console.log("User: ", user);
+      //       // if (usersMap.has(reviewer.reviewer.data.email)) {        
+      //       //   console.log("Found a match for: ", reviewer.reviewer)
+      //       // } else {
+      //       //   console.log("No match found for: ", reviewer.reviewer)
+      //       // }
+      //       reviewerList.push(reviewer.reviewer.login );
+      //     }
+      //     envObj.reviewerList = reviewerList;
+      //     envList.push(envObj)
+      //   }
+      // });
     }
+    // console.log("reviewerList: ", reviewerList)
+    console.log("emuReviewersArray: ", emuReviewersArray)
     env.wait_timer = wait_timer
 
     const protected_branches = env.deployment_branch_policy ? env.deployment_branch_policy.protected_branches : null
@@ -73,9 +109,9 @@ async function migrateEnvironments() {
         custom_branch_policies: custom_branch_policies,
       } : null,
       wait_timer: env.wait_timer,
+      ...(emuReviewersArray.length > 0 ? { reviewers: emuReviewersArray } : {})
     });
   }
-
   
   const secrets = await getEnvironmentSecrets(environments)
   const secretsEncrypt = await processEnvs(secrets, secretValue)
@@ -88,23 +124,26 @@ async function migrateEnvironments() {
   await generateIssuesForEnvironmentSecrets(secrets)
 }
 
-// async function generateUserMap() {
-//   return new Promise((resolve, reject) => {
-//       const usersMap = new Map();
-//       fs.createReadStream('users.csv')
-//       .pipe(csv())
-//       .on('data', (row) => {
-//           usersMap.set(row['mannequin-user'], row['target-user']);
-//       })
-//       .on('end', () => {
-//           //console.log("generated usersMap");
-//           resolve(usersMap);
-//       })
-//       .on('error', (error) => {
-//           reject(error);
-//       });
-//   });
-// }
+async function generateUserMap() {
+  let usersMap = new Map()
+  return new Promise((resolve, reject) => {
+    fs.createReadStream('users.csv')
+    .pipe(csv())
+    .on('data', (row) => {
+      usersMap.set(row.saml_name_id, row.emu)
+    })
+    .on('end', () => {
+      resolve(usersMap)
+    })
+  })
+}
+
+async function getUserEmail(login) {
+  const user = await octokitSource.request('GET /users/{username}', {
+    username: login,
+  })
+  return user.data.email
+}
 
 async function getEnvironmentSecrets(environments) {
   let envs = []
