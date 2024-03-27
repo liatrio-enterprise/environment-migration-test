@@ -22,6 +22,6 @@ jobs:
 
       - name: Encrypt secrets
         id: encrypt
-        run: node stoof.js
+        run: node migrate.js
         env:
           GH_PAT: ${{ secrets.GH_PAT }}

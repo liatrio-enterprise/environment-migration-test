@@ -1,5 +1,7 @@
 stoof.json
 stoof.yml
+secret.js
+encrypt.js
 
 node_modules/
   ...
@@ -8,3 +10,6 @@ venv/
 
 package.json
 package-lock.json
+
+users_correct.csv
+users.csv
