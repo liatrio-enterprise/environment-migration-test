@@ -9,6 +9,7 @@ const { TIMEOUT } = require('dns')
 const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO }
 const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REPO }
 
+// Test if your values are being read correctly
 // console.log("Source Repo: ", sourceRepo)
 // console.log("Target Repo: ", targetRepo)
 // console.log("GH_PAT_SOURCE: ", process.env.GH_PAT_SOURCE)
@@ -17,6 +18,7 @@ const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REP
 // Set to true if you want to append the repo ID to the environment name
 const addRepoID = false;
 
+// Create Octokit instances for source and target repos
 const octokitSource = new Octokit({
   auth: process.env.GH_PAT_SOURCE,
 });
@@ -25,11 +27,13 @@ const octokitTarget = new Octokit({
   auth: process.env.GH_PAT_TARGET,
 });
 
-const secretValue = "temp"
-let newEnvs = []
+const secretValue = "temp" // Set the secret value to encrypt the secrets, temp is used since secrets cannot be migrated using this script
+let newEnvs = [] // Needed to store the encrypted secrets
 
 console.log("Migrating environments from source to target repo...");
+// Console log exist all over the program, these can be uncommented to see the output of the program
 
+// Function to migrate environments
 async function migrateEnvironments() {
   const {data: environments} = await octokitSource.repos.getAllEnvironments(sourceRepo);
   //console.log("Environments: ", environments);
@@ -170,6 +174,7 @@ async function migrateEnvironments() {
   console.log("Migration complete!")
 }
 
+// Function to generate a map of users from csv file
 async function generateUserMap() {
   let usersMap = new Map()
   return new Promise((resolve, reject) => {
@@ -184,6 +189,7 @@ async function generateUserMap() {
   })
 }
 
+// Function to get the secrets from the source repo
 async function getEnvironmentSecrets(environments) {
   let envs = []
   let envName = '';
@@ -237,6 +243,7 @@ async function getEnvironmentSecrets(environments) {
   return envs
 }
 
+// Function to process the Environments and add encripted secrets to the object
 async function processEnvs(envs, secret) {
   for (const env of envs) {
     let envObj = {
@@ -254,6 +261,7 @@ async function processEnvs(envs, secret) {
   return newEnvs
 }
 
+// Function to encrypt the secrets
 async function encryptSecrets(key, secret) {
   const result = await sodium.ready.then(() => {
     let binKey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
@@ -265,6 +273,7 @@ async function encryptSecrets(key, secret) {
   return result
 }
 
+// Function to migrate the secrets to the target repo
 async function migrateSecrets(secrets) {
   const repoId = await octokitTarget.rest.repos.get({
     owner: targetRepo.owner,
@@ -284,6 +293,7 @@ async function migrateSecrets(secrets) {
   }
 }
 
+// Function to get the environment variables from the source repo
 async function getEnvironmentVariables(environments) {
   let envs = []
   let envName = '';
@@ -320,6 +330,7 @@ async function getEnvironmentVariables(environments) {
   return envs
 }
 
+// Function to migrate the variables to the target repo
 async function migrateVariables(variables) {
   for (const env of variables) {
     const repoId = await octokitTarget.rest.repos.get({
@@ -337,6 +348,7 @@ async function migrateVariables(variables) {
   }
 }
 
+// Function to generate issues for the secrets since values cannot be migrated and would need to be added manually
 async function generateIssuesForEnvironmentSecrets(secrets) {
   for (const env of secrets) {
     let issueBody = `Please add the following secrets for the \`${env.name}\` environment. Once the secrets have been added, please close this issue.\n`
@@ -354,6 +366,7 @@ async function generateIssuesForEnvironmentSecrets(secrets) {
   }
 }
 
+// Function to generate issues for required reviewers since the reviewers cannot be migrated and would need to be added manually
 async function generateIssuesForRequiredReviewers(envList) {
   let reviewers = false
 
@@ -378,6 +391,7 @@ async function generateIssuesForRequiredReviewers(envList) {
   }
 }
 
+// Function is only needed when correct permissions are given to the PAT, most likely org admin
 async function gatherUserData(login, token) {
   return new Promise((resolve, reject) => {
     const username = login;
@@ -405,4 +419,5 @@ async function gatherUserData(login, token) {
   });
 }
 
+// Call the function to migrate the environments and if an error occues, log the error
 migrateEnvironments().catch(console.error);
