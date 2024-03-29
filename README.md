@@ -28,4 +28,49 @@ Once inputs are entered the script will migrate the following settings:
 * Environment Name (optional repo ID tag at the end by changing a boolean in the code)
 
 Script will migrate all environments from a source org to a target org and attempt to migrate most of the settings. Certain features were not
-implemented since required reviewers may require org level permissions from a PAT (Personal Access Token that we didn't have access to).
+implemented since required reviewers may require org level permissions from a PAT (Personal Access Token) that we didn't have access to.
+
+## Running in Github Actions
+
+This option may be better since you can just save the action and script in a repo and it will run once a push is made
+
+1. Ensure all Environment variables are set in the repo level secrets
+
+The following secrets must be set in the repo:
+
+* SOURCE_REPO
+* TARGET_REPO
+* SOURCE_ORG
+* TARGET_ORG
+* GH_PAT_SOURCE
+* GH_PAT_TARGET
+
+2. Push changes to github
+
+Once changes are pushed the scirpt will run and generate the issues that will alert repo owners that secrets and reviewers need to be updated.
+When all issues have been closed you can close the PR and all environments should be migrated.
+
+## Running Locally
+
+If you don't want to consume action minutes you can run this script locally and just change settings on a repo by repo basis
+
+1. run `npm install`
+
+This will ensure all node modules are installed for the `migrate.js` script
+
+2. Save the required environment variables to your local environment
+
+run `export $ENV_VAR_NAME=$value` for each of the following environment variables:
+
+* SOURCE_REPO
+* TARGET_REPO
+* SOURCE_ORG
+* TARGET_ORG
+* GH_PAT_SOURCE
+* GH_PAT_TARGET
+
+Once this is done you can check the values were saved by running `echo $ENV_VAR_NAME`
+
+3. run `node migrate.js`
+
+This will run the script and do the migration from the terminal, if all goes well you should see `Migration Complete`
