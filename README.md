@@ -11,16 +11,7 @@ Required input:
 * Personal Access Token For Source (repo, users, and org:admin)
 * Personal Access Token For Target (repo, users, and org:admin)
 
-Inputs will be imported as environment variables with the following names:
-
-* SOURCE_REPO
-* TARGET_REPO
-* SOURCE_ORG
-* TARGET_ORG
-* GH_PAT_SOURCE
-* GH_PAT_TARGET
-
-Once inputs are entered the script will migrate the following settings:
+The script will migrate the following settings:
 
 * Secrets (name only, an issue will be opened to list secrets that need to be updated)
 * Variables (ame and value)
@@ -38,21 +29,21 @@ This option may be better since you can just save the action and script in a rep
 
 The following secrets must be set in the repo:
 
+* GH_PAT_SOURCE
+* GH_PAT_TARGET
+
+The following need to be environment variables:
+
 * SOURCE_REPO
 * TARGET_REPO
 * SOURCE_ORG
 * TARGET_ORG
-* GH_PAT_SOURCE
-* GH_PAT_TARGET
 
 2. Push changes to github
 
 Once changes are pushed the scirpt will run and generate the issues that will alert repo owners that secrets and reviewers need to be updated.
-When all issues have been closed you can close the PR and all environments should be migrated.
 
 ## Running Locally
-
-If you don't want to consume action minutes you can run this script locally and just change settings on a repo by repo basis
 
 1. run `npm install`
 

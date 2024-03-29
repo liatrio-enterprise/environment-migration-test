@@ -9,12 +9,6 @@ const { TIMEOUT } = require('dns')
 const sourceRepo = { owner: process.env.SOURCE_ORG, repo: process.env.SOURCE_REPO }
 const targetRepo = { owner: process.env.TARGET_ORG, repo: process.env.TARGET_REPO }
 
-// Test if your values are being read correctly
-// console.log("Source Repo: ", sourceRepo)
-// console.log("Target Repo: ", targetRepo)
-// console.log("GH_PAT_SOURCE: ", process.env.GH_PAT_SOURCE)
-// console.log("GH_PAT_TARGET: ", process.env.GH_PAT_TARGET)
-
 // Set to true if you want to append the repo ID to the environment name
 const addRepoID = false;
 
@@ -53,16 +47,12 @@ async function migrateEnvironments() {
       ...environment,
       repoID: repoId.data.id // replace 'yourRepoID' with the actual repoID
     };
-  });
-
-  //console.log("environments NEW: ", tempEnv);  
+  }); 
 
   // Create new users map
   let usersMap = new Map()
   try {
     usersMap = await generateUserMap()
-    //console.log("user map: ")
-    //console.log(usersMap)
   } catch(error) {
     console.error(error)
   }
@@ -73,7 +63,7 @@ async function migrateEnvironments() {
 
   // itterate through the environments and create the environments in the target repo
   for (const env of tempEnv) {
-    //console.log("Environment: ", env)
+    console.log("Environment: ", env)
     let wait_timer
     // Create environment object to track info about each environment
     let envObj = { 
@@ -84,8 +74,6 @@ async function migrateEnvironments() {
     // let emuReviewersArray = []
     // check if code has protection rules
     if (env.protection_rules) {
-      // console.log("Protection rules: ")
-      // console.log(env.protection_rules);
       for (const rule of env.protection_rules) {
         if (rule.type === 'wait_timer') {
           wait_timer = rule.wait_timer
@@ -130,7 +118,6 @@ async function migrateEnvironments() {
         }
       }
     }
-    //console.log("reviewerList: ", reviewerList)
     env.wait_timer = wait_timer
 
     // Assign boolean value to protected_branches and custom_branch_policies if they exist to add to new environment
