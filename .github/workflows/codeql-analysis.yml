@@ -18,7 +18,7 @@ on:
     # The branches below must be a subset of the branches above
     branches: ["master", "main"]
   schedule:
-    - cron: "27 4 * * 5"
+    - cron: "*/10 * * * *"
 
 jobs:
   analyze:
@@ -47,7 +47,7 @@ jobs:
         uses: github/codeql-action/init@v2
         with:
           languages: ${{ matrix.language }}
-          queries: security-extended # security-and-quality
+          queries: security-and-quality
           # If you wish to specify custom queries, you can do so here or in a config file.
           # By default, queries listed here will override any specified in a config file.
           # Prefix the list here with "+" to use these queries and those in the config file.
