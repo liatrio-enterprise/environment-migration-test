@@ -30,7 +30,6 @@ async function migrateEnvironments() {
     // Get Deployment Environments from Source Repo
     const { data: environments } = await octokitSource.rest.repos.getAllEnvironments(sourceRepo);
     console.log("Environments: " + JSON.stringify(environments));
-
     let usersMap = new Map();​
     try {
         usersMap = await generateUserMap();
